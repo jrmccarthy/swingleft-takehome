@@ -1,17 +1,15 @@
-import os
 from datetime import date
+from enum import StrEnum
+import os
+from typing import Tuple, Optional
 
+import models
 from sqlalchemy import create_engine
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.attributes import InstrumentedAttribute
-from sqlalchemy_utils import database_exists, create_database, drop_database
-from enum import StrEnum
-from typing import Tuple
-
-import models
-import ipdb
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy_utils import create_database, database_exists, drop_database
 
 DB_USERNAME = os.getenv("DB_USERNAME", "postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "Password1!")
@@ -21,6 +19,7 @@ CONNECTION_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}"
 CONNECTION_DB = "state_registration_deadlines"
 CONNECTION_STRING = f"{CONNECTION_URL}/{CONNECTION_DB}"
 
+
 class FilterOpsEnum(StrEnum):
     eq = "eq"
     lt = "lt"
@@ -28,27 +27,40 @@ class FilterOpsEnum(StrEnum):
     gt = "gt"
     gte = "gte"
 
-type filter_ops = FilterOpsEnum
+
+type filter_ops = Optional[FilterOpsEnum]
+
+
 type filter_arg = Tuple[InstrumentedAttribute, filter_ops, str]
+
 
 def initialize_engine():
     return create_engine(CONNECTION_STRING, echo=True)
 
+
 def create_db(engine):
     if not database_exists(engine.url):
         create_database(engine.url)
+        return True
+    return False
+
 
 def drop_db(engine):
     if database_exists(engine.url):
         drop_database(engine.url)
+        return True
+    return False
+
 
 def initialize_tables(engine):
     models.Base.metadata.create_all(engine)
+
 
 def add_row(engine, row):
     with Session(engine) as session:
         session.add(row)
         session.commit()
+
 
 def get_row(engine, state):
     with Session(engine) as session:
@@ -58,7 +70,8 @@ def get_row(engine, state):
         except NoResultFound:
             return None
 
-def get_rows(engine, filter_by: InstrumentedAttribute=None, filter_op: filter_ops=None, filter_value: str=None, order_by: InstrumentedAttribute=None, sort_order=None):
+
+def get_rows(engine, filter_by: InstrumentedAttribute = None, filter_op: filter_ops = None, filter_value: Optional[str] = None, order_by: InstrumentedAttribute = None, sort_order=None):
     with Session(engine) as session:
         q = select(models.VoterRegDeadline)
         if filter_by and filter_op and filter_value:
@@ -88,5 +101,4 @@ def get_rows(engine, filter_by: InstrumentedAttribute=None, filter_op: filter_op
                 q = q.order_by(order_by.asc())
         else:
             q = q.order_by(models.VoterRegDeadline.state.asc())
-        
         return session.scalars(q).all()

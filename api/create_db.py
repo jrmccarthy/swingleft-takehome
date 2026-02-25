@@ -1,7 +1,8 @@
 import csv
 
+from engine import add_row, create_db, initialize_engine, initialize_tables
 from models import VoterRegDeadline
-from engine import initialize_engine, initialize_tables, add_row, create_db
+
 
 def read_csv(filename="voter_registration_deadlines_2026.csv"):
     with open(filename, newline='') as csvfile:
@@ -20,12 +21,15 @@ def read_csv(filename="voter_registration_deadlines_2026.csv"):
             ))
     return rows
 
-if __name__ == "__main__":
-    print("Creating tables and inserting data")
-    engine = initialize_engine()
-    create_db(engine)
-    initialize_tables(engine)
-    rows = read_csv()
-    for row in rows:
-        add_row(engine, row)
 
+if __name__ == "__main__":
+    print("Attempting to create tables and insert data")
+    engine = initialize_engine()
+    if create_db(engine):
+        print("Database created, inserting data now")
+        initialize_tables(engine)
+        rows = read_csv()
+        for row in rows:
+            add_row(engine, row)
+    else:
+        print("Database already exists, run drop_db first if you want to recreate")

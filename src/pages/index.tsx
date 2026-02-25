@@ -80,6 +80,7 @@ export default function Home() {
       <div>
         <Heading>Voter Registration Deadlines</Heading>
       </div>
+      <br />
       <div>
         <SearchBox voterRegData={voterRegData} filter_by={filter_by} set_filter_by={set_filter_by} filter_op={filter_op} set_filter_op={set_filter_op} filter_value={filter_value} set_filter_value={set_filter_value} order_by={order_by} sort_order={sort_order} />
       </div>

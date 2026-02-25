@@ -1,16 +1,19 @@
 import datetime
-from sqlalchemy import String, Date
+
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Date, String
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import validates
-from flask_sqlalchemy import SQLAlchemy
-import ipdb
+
 
 class Base(DeclarativeBase):
     pass
 
+
 db = SQLAlchemy(model_class=Base)
+
 
 class VoterRegDeadline(Base):
     __tablename__ = "voter_reg_deadline"
@@ -27,7 +30,7 @@ class VoterRegDeadline(Base):
     @validates('deadline_by_mail')
     @validates('deadline_online')
     def empty_string_to_null(self, key, value):
-        if isinstance(value,str) and value == '':
+        if isinstance(value, str) and value == '':
             return None
         else:
             return value

@@ -1,7 +1,4 @@
-import csv
-
-from models import VoterRegDeadline
-from engine import initialize_engine, drop_db
+from engine import drop_db, initialize_engine
 
 if __name__ == "__main__":
     print("Dropping database")

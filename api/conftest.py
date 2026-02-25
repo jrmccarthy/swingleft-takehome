@@ -1,6 +1,6 @@
-import pytest
-from engine import CONNECTION_URL, create_db, drop_db, initialize_tables, add_row
+from engine import CONNECTION_URL, add_row, create_db, drop_db, initialize_tables
 from models import VoterRegDeadline
+import pytest
 from sqlalchemy import create_engine
 
 TEST_DB = "testdb"
@@ -11,6 +11,7 @@ TEST_ROWS = [
     ["Indiana", "2026-11-06", "2026-11-05", "2026-10-04", "In-person during early voting", "https://indiana.test.com", "Some other details about this state"],
     ["New York", "2026-11-01", "2026-10-01", "2026-10-03", "In-person on Election Day", "https://newyork.test.com", "More stuff"],
 ]
+
 
 @pytest.fixture(scope="session", autouse=True)
 def db_setup():
@@ -28,9 +29,11 @@ def db_setup():
             description=row[6],
         ))
 
+
 def test_db_setup(engine):
     drop_db(engine)
     create_db(engine)
+
 
 @pytest.fixture(scope="session")
 def sqlalchemy_connect_url():
