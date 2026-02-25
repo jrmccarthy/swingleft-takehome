@@ -34,9 +34,9 @@ enum SortOrder {
 
 interface IVoterRegDataItem {
   state: string
-  deadline_in_person: Date | null
-  deadline_by_mail: Date | null
-  deadline_online: Date | null
+  deadline_in_person: string | null
+  deadline_by_mail: string | null
+  deadline_online: string | null
   election_day_registration: string
   online_registration_link: string
   description: string
@@ -132,7 +132,7 @@ function SearchBox({voterRegData, filter_by, set_filter_by, filter_op, set_filte
         {/* {filterValueField} */}
         <Field.Root id="filter_value">
           <Field.Label></Field.Label>
-          <Input placeholder="..." value={filter_value_input} onChange={(e) => set_filter_value_input(e.target.value)}/>
+          <Input placeholder="Filter value..." value={filter_value_input} onChange={(e) => set_filter_value_input(e.target.value)}/>
         </Field.Root>
         <Button size="sm" mt="4" onClick={setSearchTerms}>
           Apply
@@ -167,17 +167,11 @@ function VoterRegTable({voterRegData, order_by, sort_order}) {
         {voterRegData.map((item: IVoterRegDataItem) => (
           <Table.Row key={item.state}>
             <Table.Cell>{item.state}</Table.Cell>
-            <Table.Cell>{item.deadline_in_person 
-              ? format(item.deadline_in_person, "yyyy-MM-dd")
-              : ""}
+            <Table.Cell>{item.deadline_in_person}
             </Table.Cell>
-            <Table.Cell>{item.deadline_by_mail 
-              ? format(item.deadline_by_mail, "yyyy-MM-dd")
-              : ""}
+            <Table.Cell>{item.deadline_by_mail}
             </Table.Cell>
-            <Table.Cell>{item.deadline_online 
-              ? format(item.deadline_online, "yyyy-MM-dd")
-              : ""}
+            <Table.Cell>{item.deadline_online}
             </Table.Cell>
             <Table.Cell>{item.election_day_registration}</Table.Cell>
             <Table.Cell>{item.online_registration_link}</Table.Cell>

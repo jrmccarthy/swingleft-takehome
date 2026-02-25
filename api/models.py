@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import validates
 from flask_sqlalchemy import SQLAlchemy
+import ipdb
 
 class Base(DeclarativeBase):
     pass
@@ -34,9 +35,9 @@ class VoterRegDeadline(Base):
     def serialize(self):
         return {
             'state': self.state,
-            'deadline_by_mail': self.deadline_by_mail,
-            'deadline_in_person': self.deadline_in_person,
-            'deadline_online': self.deadline_online,
+            'deadline_by_mail': self.deadline_by_mail and self.deadline_by_mail.strftime("%Y-%m-%d"),
+            'deadline_in_person': self.deadline_in_person and self.deadline_in_person.strftime("%Y-%m-%d"),
+            'deadline_online': self.deadline_online and self.deadline_online.strftime("%Y-%m-%d"),
             'election_day_registration': self.election_day_registration,
             'online_registration_link': self.online_registration_link,
             'description': self.description
