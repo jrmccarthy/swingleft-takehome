@@ -3,10 +3,15 @@ from flask import request
 from flask import jsonify
 from models import db, VoterRegDeadline
 from engine import get_row, get_rows, CONNECTION_STRING
+import ipdb
 
 app = Flask("swingleft")
 app.config["SQLALCHEMY_DATABASE_URI"] = CONNECTION_STRING
 db.init_app(app)
+
+@app.route("/")
+def home():
+    return "<p>Homepage</p>"
 
 @app.route("/api")
 def api_home():
@@ -38,6 +43,3 @@ def voter_reg_deadline_get(id):
         return jsonify(row.serialize())
     else:
         return jsonify({})
-
-if __name__ == "__main__":
-    app.run()
