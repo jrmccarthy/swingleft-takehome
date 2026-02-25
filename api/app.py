@@ -1,12 +1,14 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+from flask_cors import CORS, cross_origin
 from models import db, VoterRegDeadline
 from engine import get_row, get_rows, CONNECTION_STRING
-import ipdb
 
 app = Flask("swingleft")
 app.config["SQLALCHEMY_DATABASE_URI"] = CONNECTION_STRING
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 db.init_app(app)
 
 @app.route("/")
