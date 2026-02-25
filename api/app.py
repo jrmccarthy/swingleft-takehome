@@ -35,7 +35,7 @@ def voter_reg_deadline_list():
     if rows:
         return jsonify([row.serialize() for row in rows])
     else:
-        return jsonify({})
+        return jsonify([])
         
 
 @app.route("/api/voter_reg_deadline/<id>", methods=['GET'])

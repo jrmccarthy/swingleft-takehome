@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 from sqlalchemy import create_engine
 from sqlalchemy import select
@@ -26,7 +27,6 @@ class FilterOpsEnum(StrEnum):
     lte = "lte"
     gt = "gt"
     gte = "gte"
-    ne = "ne"
 
 type filter_ops = FilterOpsEnum
 type filter_arg = Tuple[InstrumentedAttribute, filter_ops, str]
@@ -62,21 +62,25 @@ def get_rows(engine, filter_by: InstrumentedAttribute=None, filter_op: filter_op
     with Session(engine) as session:
         q = select(models.VoterRegDeadline)
         if filter_by and filter_op and filter_value:
-            match filter_op:
-                case FilterOpsEnum.eq:
-                    q = q.where(getattr(models.VoterRegDeadline, filter_by) == filter_value)
-                case FilterOpsEnum.lt:
-                    q = q.where(getattr(models.VoterRegDeadline, filter_by) < filter_value)
-                case FilterOpsEnum.lte:
-                    q = q.where(getattr(models.VoterRegDeadline, filter_by) <= filter_value)
-                case FilterOpsEnum.gt:
-                    q = q.where(getattr(models.VoterRegDeadline, filter_by) > filter_value)
-                case FilterOpsEnum.gte:
-                    q = q.where(getattr(models.VoterRegDeadline, filter_by) >= filter_value)
-                case FilterOpsEnum.ne:
-                    q = q.where(getattr(models.VoterRegDeadline, filter_by) != filter_value)
-                case _:
-                    raise Exception(f"Operator not allowed: provided {filter[1]}")
+            try:
+                if filter_by in ["deadline_by_mail", "deadline_in_person", "deadline_online"]:
+                    assert date.fromisoformat(filter_value)
+                match filter_op:
+                    case FilterOpsEnum.eq:
+                        q = q.where(getattr(models.VoterRegDeadline, filter_by) == filter_value)
+                    case FilterOpsEnum.lt:
+                        q = q.where(getattr(models.VoterRegDeadline, filter_by) < filter_value)
+                    case FilterOpsEnum.lte:
+                        q = q.where(getattr(models.VoterRegDeadline, filter_by) <= filter_value)
+                    case FilterOpsEnum.gt:
+                        q = q.where(getattr(models.VoterRegDeadline, filter_by) > filter_value)
+                    case FilterOpsEnum.gte:
+                        q = q.where(getattr(models.VoterRegDeadline, filter_by) >= filter_value)
+                    case _:
+                        raise Exception(f"Operator not allowed: provided {filter[1]}")
+            except ValueError:
+                # Invalid date, we're pretty permissive so just don't filter in this case
+                pass
         if order_by:
             if sort_order == "desc":
                 q = q.order_by(order_by.desc())

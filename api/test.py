@@ -99,16 +99,6 @@ def test_get_rows_filter_date_gte(engine):
     assert rows[1].state == "New York"
     assert rows[2].state == "Washington"
 
-def test_get_rows_filter_date_ne(engine):
-    # Test the != operator for dates
-    filter_by = "deadline_by_mail"
-    filter_op = "ne"
-    filter_value = "2026-10-01"
-    rows = get_rows(engine, filter_by=filter_by, filter_op=filter_op, filter_value=filter_value)
-    assert len(rows) == 2
-    assert rows[0].state == "Indiana"
-    assert rows[1].state == "Washington"
-
 def test_get_rows_order_by_state(engine):
     # Ensure we can sort by state
     order_by = VoterRegDeadline.state
