@@ -78,7 +78,7 @@ You will need the following installed (I build this using Ubuntu 24.x, you may h
 3. `python3 api/create_db.py`
     - If necessary, you can nuke the database entirely with `python3 api/drop_db.py`
 4. `pnpm dev`
-    - If you have different `postgresql` connection info than my defaults ([see: `api/engine.py`](../api/engine.py)), you can override them by using Environment Variables
+    - If you have different `postgresql` connection info than my defaults ([see: `api/engine.py`](api/engine.py)), you can override them by using Environment Variables
     - e.g. `DB_USERNAME=hello DB_PASSWORD=world pnpm dev` instead to run the app
 5. Browse to `http://localhost:3000`
     - Note that this site will also be served to the wider internet. There shouldn't be any problems there but its always worth remembering you do not want to use the Flask dev server for real production, and this app doesn't have any real security hardening applied
